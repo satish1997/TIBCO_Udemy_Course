@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DataDefinition>
+	<Element>
+		<Source>
+			<sourcePath>C:\Users\satis\OneDrive\TIBCO_Udemy_Course\Files\Input\Portugal\</sourcePath>
+			<sourceFilePattern>*</sourceFilePattern>
+		</Source>
+		<Target>
+			<targetPath>C:\Users\satis\OneDrive\TIBCO_Udemy_Course\Files\Output\Portugal\</targetPath>
+		</Target>
+		<Country>PT</Country>
+	</Element>
+	<Element>
+		<Source>
+			<sourcePath>C:\Users\satis\OneDrive\TIBCO_Udemy_Course\Files\Input\Spain\</sourcePath>
+			<sourceFilePattern>*</sourceFilePattern>
+		</Source>
+		<Target>
+			<targetPath>C:\Users\satis\OneDrive\TIBCO_Udemy_Course\Files\Output\Spain\</targetPath>
+		</Target>
+		<Country>SP</Country>
+	</Element>
+	<Element>
+		<Source>
+			<sourcePath>C:\Users\satis\OneDrive\TIBCO_Udemy_Course\Files\Input\India\</sourcePath>
+			<sourceFilePattern>*</sourceFilePattern>
+		</Source>
+		<Target>
+			<targetPath>C:\Users\satis\OneDrive\TIBCO_Udemy_Course\Files\Output\India\</targetPath>
+		</Target>
+		<Country>IN</Country>
+	</Element>
+</DataDefinition>
