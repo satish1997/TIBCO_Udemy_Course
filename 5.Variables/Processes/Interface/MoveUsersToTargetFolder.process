@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/MoveUsersToTargetFolder" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:ns2="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/schemas/2.ParseRenderXML/Resources/Schemas/Commons/Header" xmlns:ns3="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Commons/Context">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/MoveUsersToTargetFolder" schemaLocation="/Resources/Schemas/Orchestration/MoveUsersToTargetFolder.xsd"/>
+    <pd:name>Processes/Interface/MoveUsersToTargetFolder.process</pd:name>
+    <pd:startName>JMS Queue Receiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="JMS Queue Receiver">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>104</pd:x>
+        <pd:y>82</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%Resources/Connections/JMS/UsersQueue%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/Resources/Connections/JMS/JMS Connection.sharedjmscon</ConnectionReference>
+            <OutDataxsdString ref="pfx:MoveUsersToTargetFolder"/>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>495</pd:endX>
+    <pd:endY>81</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1693378091671</pd:targetNamespace>
+    <pd:activity name="Main">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>286</pd:x>
+        <pd:y>81</pd:y>
+        <config>
+            <processName>/Processes/Interface/MainMoveUsersToTargetFolder.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx:MoveUsersToTargetFolder>
+                <ns1:Header>
+                    <ns3:Context>
+                        <ns3:correlationId>
+                            <xsl:value-of select="'2435342343434'"/>
+                        </ns3:correlationId>
+                        <xsl:if test="$JMS-Queue-Receiver/ns:ActivityOutput/Body/pfx:MoveUsersToTargetFolder/ns1:Header/ns3:Context/ns3:correlationId">
+                            <ns3:parentCorrelationId>
+                                <xsl:value-of select="$JMS-Queue-Receiver/ns:ActivityOutput/Body/pfx:MoveUsersToTargetFolder/ns1:Header/ns3:Context/ns3:correlationId"/>
+                            </ns3:parentCorrelationId>
+                        </xsl:if>
+                    </ns3:Context>
+                    <ns1:timeStamp>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </ns1:timeStamp>
+                </ns1:Header>
+                <pfx:Body>
+                    <pfx:source>
+                        <pfx:sourceDirectoryPath>
+                            <xsl:value-of select="$JMS-Queue-Receiver/ns:ActivityOutput/Body/pfx:MoveUsersToTargetFolder/pfx:Body/pfx:source/pfx:sourceDirectoryPath"/>
+                        </pfx:sourceDirectoryPath>
+                        <pfx:sourceFileName>
+                            <xsl:value-of select="$JMS-Queue-Receiver/ns:ActivityOutput/Body/pfx:MoveUsersToTargetFolder/pfx:Body/pfx:source/pfx:sourceFileName"/>
+                        </pfx:sourceFileName>
+                    </pfx:source>
+                    <pfx:target>
+                        <pfx:targetDirectoryPath>
+                            <xsl:value-of select="$JMS-Queue-Receiver/ns:ActivityOutput/Body/pfx:MoveUsersToTargetFolder/pfx:Body/pfx:target/pfx:targetDirectoryPath"/>
+                        </pfx:targetDirectoryPath>
+                        <pfx:targetFileName>
+                            <xsl:value-of select="$JMS-Queue-Receiver/ns:ActivityOutput/Body/pfx:MoveUsersToTargetFolder/pfx:Body/pfx:target/pfx:targetFileName"/>
+                        </pfx:targetFileName>
+                    </pfx:target>
+                </pfx:Body>
+            </pfx:MoveUsersToTargetFolder>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>JMS Queue Receiver</pd:from>
+        <pd:to>Main</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Main</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

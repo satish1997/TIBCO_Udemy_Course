@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/CopyUser2ToTargetFolder" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx2="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/CopyFilesRequest" xmlns:ns="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:pfx3="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/CopyUser2ToTargetFolderRequest" xmlns:pfx4="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/Services/CopyUsers2ToTargetFolderResponse" xmlns:ns2="http://www.tibco.com/schemas/2.ParseRenderXML/Resources/Schemas/Commons/Header" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Commons/Context" xmlns:ns3="http://www.tibco.com/schemas/2.ParseRenderXML/Resources/Schemas/Services/CopyFilesResponse">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/CopyUser2ToTargetFolderRequest" schemaLocation="/Resources/Schemas/Orchestration/CopyUser2ToTargetFolderRequest.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/Services/CopyUsers2ToTargetFolderResponse" schemaLocation="/Resources/Schemas/Orchestration/CopyUsers2ToTargetFolderResponse.xsd"/>
+    <pd:name>Processes/Interface/MainCopyUsers2ToTargetFolder.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx3:CopyUser2ToTargetFolderRequest"/>
+    <pd:startX>112</pd:startX>
+    <pd:startY>89</pd:startY>
+    <pd:returnBindings>
+        <pfx4:CopyUsers2ToTargetFolderResponse>
+            <xsl:copy-of select="$CopyFiles/ns3:CopyFilesResponse/ns2:Header"/>
+            <pfx4:Body>
+                <xsl:copy-of select="$CopyFiles/ns3:CopyFilesResponse/ns3:Body/ancestor-or-self::*/namespace::node()"/>
+                <xsl:copy-of select="$CopyFiles/ns3:CopyFilesResponse/ns3:Body/@*"/>
+                <xsl:copy-of select="$CopyFiles/ns3:CopyFilesResponse/ns3:Body/node()"/>
+            </pfx4:Body>
+        </pfx4:CopyUsers2ToTargetFolderResponse>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx4:CopyUsers2ToTargetFolderResponse"/>
+    <pd:endX>697</pd:endX>
+    <pd:endY>93</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1693382066636</pd:targetNamespace>
+    <pd:activity name="Start Log">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>239</pd:x>
+        <pd:y>90</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <message>
+                    <xsl:value-of select="tib:render-xml($Start/pfx3:CopyUser2ToTargetFolderRequest, false(), false())"/>
+                </message>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="CopyFiles">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>402</pd:x>
+        <pd:y>92</pd:y>
+        <config>
+            <processName>/Processes/Services/SharedFolders/CopyFiles.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx2:CopyFilesRequest>
+                <ns2:Header>
+                    <ns1:Context>
+                        <ns1:correlationId>
+                            <xsl:value-of select="'33333333333'"/>
+                        </ns1:correlationId>
+                        <ns1:parentCorrelationId>
+                            <xsl:value-of select="$Start/pfx3:CopyUser2ToTargetFolderRequest/ns2:Header/ns1:Context/ns1:correlationId"/>
+                        </ns1:parentCorrelationId>
+                    </ns1:Context>
+                    <ns2:timeStamp>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </ns2:timeStamp>
+                </ns2:Header>
+                <pfx2:Body>
+                    <pfx2:source>
+                        <pfx2:sourceDirectoryPath>
+                            <xsl:value-of select="$Start/pfx3:CopyUser2ToTargetFolderRequest/pfx3:Body/pfx3:source/pfx3:sourceDirectoryPath"/>
+                        </pfx2:sourceDirectoryPath>
+                        <pfx2:sourceFileName>
+                            <xsl:value-of select="$Start/pfx3:CopyUser2ToTargetFolderRequest/pfx3:Body/pfx3:source/pfx3:sourceFileName"/>
+                        </pfx2:sourceFileName>
+                    </pfx2:source>
+                    <pfx2:target>
+                        <pfx2:targetDirectoryPath>
+                            <xsl:value-of select="$Start/pfx3:CopyUser2ToTargetFolderRequest/pfx3:Body/pfx3:target/pfx3:targetDirectoryPath"/>
+                        </pfx2:targetDirectoryPath>
+                        <pfx2:targetFileName>
+                            <xsl:value-of select="$Start/pfx3:CopyUser2ToTargetFolderRequest/pfx3:Body/pfx3:target/pfx3:targetFileName"/>
+                        </pfx2:targetFileName>
+                    </pfx2:target>
+                </pfx2:Body>
+            </pfx2:CopyFilesRequest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="End Log">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>562</pd:x>
+        <pd:y>92</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <message>
+                    <xsl:value-of select="tib:render-xml($CopyFiles/ns3:CopyFilesResponse, false(), false())"/>
+                </message>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Start Log</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start Log</pd:from>
+        <pd:to>CopyFiles</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CopyFiles</pd:from>
+        <pd:to>End Log</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>End Log</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
