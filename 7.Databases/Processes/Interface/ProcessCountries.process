@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/6.HTTP/Resources/Schemas/Services/ProcessCountriesRequest" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx2="http://www.tibco.com/schemas/6.HTTP/Resources/Schemas/Services/ProcessCountriesResponse" xmlns:pfx3="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Models/Countries" xmlns:ns="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Models/Country" xmlns:pfx4="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Commons/Response" xmlns:pfx5="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesByIdRequest" xmlns:ns2="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesByIdResponse" xmlns:ns1="http://www.tibco.com/schemas/2.ParseRenderXML/Resources/Schemas/Commons/Header" xmlns:ns3="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/AddCountriesRequest">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/6.HTTP/Resources/Schemas/Services/ProcessCountriesRequest" schemaLocation="/Resources/Schemas/Orchestration/ProcessCountriesRequest.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Commons/Response" schemaLocation="/Resources/Schemas/Commons/Response.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/6.HTTP/Resources/Schemas/Services/ProcessCountriesResponse" schemaLocation="/Resources/Schemas/Orchestration/ProcessCountriesResponse.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Models/Countries" schemaLocation="/Resources/Schemas/Models/Countries.xsd"/>
+    <pd:name>Processes/Interface/ProcessCountries.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:ProcessCountriesRequest"/>
+    <pd:startX>27</pd:startX>
+    <pd:startY>157</pd:startY>
+    <pd:returnBindings>
+        <pfx2:ProcessCountriesResponse>
+            <xsl:copy-of select="$Start/pfx:ProcessCountriesRequest/ns1:Header"/>
+            <pfx2:Body>
+                <xsl:choose>
+                    <xsl:when test="$Start/pfx:ProcessCountriesRequest/pfx:Body/pfx:method = 'GET'">
+                        <xsl:copy-of select="$Map-Response-1/pfx4:Response"/>
+                    </xsl:when>
+                    <xsl:when test="$Start/pfx:ProcessCountriesRequest/pfx:Body/pfx:method = 'POST'">
+                        <xsl:copy-of select="$Map-Response/pfx4:Response"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:copy-of select="$Map-Response-2/pfx4:Response"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </pfx2:Body>
+        </pfx2:ProcessCountriesResponse>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx2:ProcessCountriesResponse"/>
+    <pd:endX>858</pd:endX>
+    <pd:endY>156</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1693489866298</pd:targetNamespace>
+    <pd:activity name="Validate HTTP Method">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>190</pd:x>
+        <pd:y>165</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Map Response">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>704</pd:x>
+        <pd:y>156</pd:y>
+        <config>
+            <element ref="pfx4:Response"/>
+        </config>
+        <pd:inputBindings>
+            <pfx4:Response>
+                <pfx4:message>
+                    <xsl:value-of select="'{&quot;message&quot;.&quot;item has been created&quot;}'"/>
+                </pfx4:message>
+                <pfx4:responseStatus>
+                    <xsl:value-of select="'SUCCESS'"/>
+                </pfx4:responseStatus>
+            </pfx4:Response>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Map-Response-1">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>720</pd:x>
+        <pd:y>283</pd:y>
+        <config>
+            <element ref="pfx4:Response"/>
+        </config>
+        <pd:inputBindings>
+            <pfx4:Response>
+                <pfx4:message>
+                    <xsl:value-of select="'{&quot;message&quot;.&quot;items has been retrieved&quot;}'"/>
+                </pfx4:message>
+                <pfx4:responseStatus>
+                    <xsl:value-of select="'SUCCESS'"/>
+                </pfx4:responseStatus>
+                <xsl:copy-of select="$GetCountriesById/ns2:GetCountriesByIdResponse/ns2:Body/pfx4:Response/pfx4:data"/>
+            </pfx4:Response>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Map-Response-2">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>405</pd:x>
+        <pd:y>35</pd:y>
+        <config>
+            <element ref="pfx4:Response"/>
+        </config>
+        <pd:inputBindings>
+            <pfx4:Response>
+                <pfx4:message>
+                    <xsl:value-of select="'{&quot;message&quot;.&quot;method is not available&quot;}'"/>
+                </pfx4:message>
+                <pfx4:responseStatus>
+                    <xsl:value-of select="'FAILURE'"/>
+                </pfx4:responseStatus>
+            </pfx4:Response>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetCountriesById">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>405</pd:x>
+        <pd:y>285</pd:y>
+        <config>
+            <processName>/Processes/Services/Database/GetCountriesById.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx5:GetCountriesByIdRequest>
+                <xsl:copy-of select="$Start/pfx:ProcessCountriesRequest/ns1:Header"/>
+                <pfx5:Body>
+                    <xsl:if test="$Start/pfx:ProcessCountriesRequest/pfx:Body/pfx:queryParam">
+                        <pfx5:queryParam>
+                            <xsl:value-of select="$Start/pfx:ProcessCountriesRequest/pfx:Body/pfx:queryParam"/>
+                        </pfx5:queryParam>
+                    </xsl:if>
+                </pfx5:Body>
+            </pfx5:GetCountriesByIdRequest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Render XML">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:x>569</pd:x>
+        <pd:y>282</pd:y>
+        <config>
+            <renderAsText>text</renderAsText>
+            <validateInput>true</validateInput>
+            <textEncoding>UTF-8</textEncoding>
+            <term ref="pfx2:ProcessCountriesResponse"/>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ProcessCountriesResponse>
+                <xsl:copy-of select="$GetCountriesById/ns2:GetCountriesByIdResponse/ns1:Header"/>
+                <pfx2:Body>
+                    <xsl:copy-of select="$GetCountriesById/ns2:GetCountriesByIdResponse/ns2:Body/ancestor-or-self::*/namespace::node()"/>
+                    <xsl:copy-of select="$GetCountriesById/ns2:GetCountriesByIdResponse/ns2:Body/@*"/>
+                    <xsl:copy-of select="$GetCountriesById/ns2:GetCountriesByIdResponse/ns2:Body/node()"/>
+                </pfx2:Body>
+            </pfx2:ProcessCountriesResponse>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="AddCountries">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>582</pd:x>
+        <pd:y>157</pd:y>
+        <config>
+            <processName>/Processes/Services/Database/AddCountries.process</processName>
+        </config>
+        <pd:inputBindings>
+            <ns3:AddCountriesRequest>
+                <xsl:copy-of select="$Start/pfx:ProcessCountriesRequest/ns1:Header"/>
+                <ns3:Body>
+                    <xsl:for-each select="$Parse-XML/pfx3:Countries/ns:Country">
+                        <ns3:record>
+                            <ns3:countryCode>
+                                <xsl:value-of select="ns:countryCode"/>
+                            </ns3:countryCode>
+                            <ns3:countryName>
+                                <xsl:value-of select="ns:countryName"/>
+                            </ns3:countryName>
+                        </ns3:record>
+                    </xsl:for-each>
+                </ns3:Body>
+            </ns3:AddCountriesRequest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse XML">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>448</pd:x>
+        <pd:y>158</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="pfx3:Countries"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$Start/pfx:ProcessCountriesRequest/pfx:Body/pfx:data/*"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Validate HTTP Method</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Validate HTTP Method</pd:from>
+        <pd:to>GetCountriesById</pd:to>
+        <pd:xpathDescription>GET</pd:xpathDescription>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/pfx:ProcessCountriesRequest/pfx:Body/pfx:method = 'GET'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Validate HTTP Method</pd:from>
+        <pd:to>Parse XML</pd:to>
+        <pd:xpathDescription>POST</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/pfx:ProcessCountriesRequest/pfx:Body/pfx:method = 'POST'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map Response</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Validate HTTP Method</pd:from>
+        <pd:to>Map-Response-2</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map-Response-2</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map-Response-1</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetCountriesById</pd:from>
+        <pd:to>Render XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Render XML</pd:from>
+        <pd:to>Map-Response-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>AddCountries</pd:from>
+        <pd:to>Map Response</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse XML</pd:from>
+        <pd:to>AddCountries</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>JDBC Connection</name>
+    <resourceType>ae.shared.JDBCSharedResource</resourceType>
+    <config>
+        <driver>com.mysql.jdbc.Driver</driver>
+        <maxConnections>10</maxConnections>
+        <loginTimeout>0</loginTimeout>
+        <connectionType>JDBC</connectionType>
+        <UseSharedJndiConfig>false</UseSharedJndiConfig>
+        <user>root</user>
+        <password>#!jP5aGO0lutRG4L8kQbcP9KHn03YTbPyi</password>
+        <location>jdbc:mysql://localhost:3306/tibco_course</location>
+    </config>
+</BWSharedResource>

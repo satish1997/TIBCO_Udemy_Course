@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesRequest" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx2="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesResponse" xmlns:ns="http://www.tibco.com/schemas/2.ParseRenderXML/Resources/Schemas/Commons/Header" xmlns:pfx3="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesByIdRequest" xmlns:pfx4="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesByIdResponse" xmlns:ns2="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Commons/Response" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesRequest" schemaLocation="/Resources/Schemas/Services/GetCountriesRequest.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesResponse" schemaLocation="/Resources/Schemas/Services/GetCountriesResponse.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesByIdRequest" schemaLocation="/Resources/Schemas/Services/GetCountriesByIdRequest.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/7.Databases/Resources/Schemas/Services/GetCountriesByIdResponse" schemaLocation="/Resources/Schemas/Services/GetCountriesByIdResponse.xsd"/>
+    <pd:name>Processes/Services/Database/GetCountriesById.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx3:GetCountriesByIdRequest"/>
+    <pd:startX>184</pd:startX>
+    <pd:startY>100</pd:startY>
+    <pd:returnBindings>
+        <pfx4:GetCountriesByIdResponse>
+            <xsl:copy-of select="$Start/pfx3:GetCountriesByIdRequest/ns:Header"/>
+            <pfx4:Body>
+                <ns2:Response>
+                    <ns2:message>
+                        <xsl:value-of select="'query has been performed'"/>
+                    </ns2:message>
+                    <ns2:responseStatus>
+                        <xsl:value-of select="'SUCCESS'"/>
+                    </ns2:responseStatus>
+                    <ns2:data>
+                        <xsl:copy-of select="$JDBC-Query/resultSet"/>
+                    </ns2:data>
+                </ns2:Response>
+            </pfx4:Body>
+        </pfx4:GetCountriesByIdResponse>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx4:GetCountriesByIdResponse"/>
+    <pd:endX>502</pd:endX>
+    <pd:endY>100</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1693546770113</pd:targetNamespace>
+    <pd:activity name="JDBC Query">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>343</pd:x>
+        <pd:y>101</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <maxRows>100</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/Resources/Connections/JDBC/JDBC Connection.sharedjdbc</jdbcSharedConfig>
+            <statement>SELECT ID, COUNTRY_CODE, COUNTRY_NAME FROM countries where COUNTRY_CODE = ?;</statement>
+            <wizardData/>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>COUNTRY_CODE</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>ID</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>4</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>INT</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>COUNTRY_CODE</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>COUNTRY_NAME</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <COUNTRY_CODE>
+                    <xsl:value-of select="substring-after($Start/pfx3:GetCountriesByIdRequest/pfx3:Body/pfx3:queryParam, '=')"/>
+                </COUNTRY_CODE>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>JDBC Query</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JDBC Query</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

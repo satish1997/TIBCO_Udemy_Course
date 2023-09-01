@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/CopyUser2ToTargetFolder" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx2="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Commons/Context" xmlns:ns="http://www.tibco.com/schemas/2.ParseRenderXML/Resources/Schemas/Commons/Header" xmlns:pfx3="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/CopyUser2ToTargetFolderRequest" xmlns:pfx4="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/Services/CopyUsers2ToTargetFolderResponse" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/jms">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/3.Files/Resources/Schemas/Services/CopyUser2ToTargetFolderRequest" schemaLocation="/Resources/Schemas/Orchestration/CopyUser2ToTargetFolderRequest.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/Services/CopyUsers2ToTargetFolderResponse" schemaLocation="/Resources/Schemas/Orchestration/CopyUsers2ToTargetFolderResponse.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/0.ProjectZero/Resources/Schemas/Commons/Context" schemaLocation="/Resources/Schemas/Commons/Context.xsd"/>
+    <pd:name>Processes/Interface/CopyUsers2ToTargetFolder.process</pd:name>
+    <pd:startName>JMS Queue Receiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings>
+        <xsl:copy-of select="$MainCopyUsers2ToTargetFolder/pfx4:CopyUsers2ToTargetFolderResponse"/>
+    </pd:returnBindings>
+    <pd:starter name="JMS Queue Receiver">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>71</pd:x>
+        <pd:y>101</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%Resources/Connections/JMS/CopyUsersQueue%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/Resources/Connections/JMS/JMS Connection.sharedjmscon</ConnectionReference>
+            <OutDataxsdString ref="pfx3:CopyUser2ToTargetFolderRequest"/>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx4:CopyUsers2ToTargetFolderResponse"/>
+    <pd:endX>914</pd:endX>
+    <pd:endY>106</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Context ref="pfx2:Context"/>
+    </pd:processVariables>
+    <pd:targetNamespace>http://xmlns.example.com/1693382022449</pd:targetNamespace>
+    <pd:activity name="MainCopyUsers2ToTargetFolder">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>609</pd:x>
+        <pd:y>104</pd:y>
+        <config>
+            <processName>/Processes/Interface/MainCopyUsers2ToTargetFolder.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx3:CopyUser2ToTargetFolderRequest>
+                <ns:Header>
+                    <pfx2:Context>
+                        <pfx2:correlationId>
+                            <xsl:value-of select="$Context/pfx2:Context/pfx2:correlationId"/>
+                        </pfx2:correlationId>
+                        <xsl:if test="$JMS-Queue-Receiver/ns1:ActivityOutput/Body/pfx3:CopyUser2ToTargetFolderRequest/ns:Header/pfx2:Context/pfx2:correlationId">
+                            <pfx2:parentCorrelationId>
+                                <xsl:value-of select="$JMS-Queue-Receiver/ns1:ActivityOutput/Body/pfx3:CopyUser2ToTargetFolderRequest/ns:Header/pfx2:Context/pfx2:correlationId"/>
+                            </pfx2:parentCorrelationId>
+                        </xsl:if>
+                    </pfx2:Context>
+                    <ns:timeStamp>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </ns:timeStamp>
+                </ns:Header>
+                <xsl:copy-of select="$JMS-Queue-Receiver/ns1:ActivityOutput/Body/pfx3:CopyUser2ToTargetFolderRequest/pfx3:Body"/>
+            </pfx3:CopyUser2ToTargetFolderRequest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Reply to JMS Message">
+        <pd:type>com.tibco.plugin.jms.JMSReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSReplyActivity</pd:resourceType>
+        <pd:x>758</pd:x>
+        <pd:y>112</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+                <EventSource>JMS Queue Receiver</EventSource>
+            </ConfigurableHeaders>
+            <InDataxsdString ref="pfx4:CopyUsers2ToTargetFolderResponse"/>
+        </config>
+        <pd:inputBindings>
+            <ns1:ActivityInput>
+                <Body>
+                    <xsl:copy-of select="$MainCopyUsers2ToTargetFolder/pfx4:CopyUsers2ToTargetFolderResponse"/>
+                </Body>
+            </ns1:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GenerateUUID">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>320</pd:x>
+        <pd:y>35</pd:y>
+        <config>
+            <processName>/Processes/Commons/GenerateUUID.process</processName>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Assign">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>465</pd:x>
+        <pd:y>104</pd:y>
+        <config>
+            <variableName>Context</variableName>
+        </config>
+        <pd:inputBindings>
+            <pfx2:Context>
+                <pfx2:correlationId>
+                    <xsl:value-of select="$GetUUID/uuid/correlationId"/>
+                </pfx2:correlationId>
+                <xsl:if test="$JMS-Queue-Receiver/ns1:ActivityOutput/Body/pfx3:CopyUser2ToTargetFolderRequest/ns:Header/pfx2:Context/pfx2:correlationId">
+                    <pfx2:parentCorrelationId>
+                        <xsl:value-of select="$JMS-Queue-Receiver/ns1:ActivityOutput/Body/pfx3:CopyUser2ToTargetFolderRequest/ns:Header/pfx2:Context/pfx2:correlationId"/>
+                    </pfx2:parentCorrelationId>
+                </xsl:if>
+            </pfx2:Context>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GenerateUUIDv2">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>276</pd:x>
+        <pd:y>193</pd:y>
+        <config>
+            <processName>/Processes/Commons/GenerateUUIDv2.process</processName>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="GetUUID">
+        <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+        <pd:x>392</pd:x>
+        <pd:y>195</pd:y>
+        <config>
+            <variableConfig>/Resources/SharedVariables/UUID.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>JMS Queue Receiver</pd:from>
+        <pd:to>GenerateUUID</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>false()</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>MainCopyUsers2ToTargetFolder</pd:from>
+        <pd:to>Reply to JMS Message</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Reply to JMS Message</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GenerateUUID</pd:from>
+        <pd:to>Assign</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Assign</pd:from>
+        <pd:to>MainCopyUsers2ToTargetFolder</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Receiver</pd:from>
+        <pd:to>GenerateUUIDv2</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GenerateUUIDv2</pd:from>
+        <pd:to>GetUUID</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetUUID</pd:from>
+        <pd:to>Assign</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
